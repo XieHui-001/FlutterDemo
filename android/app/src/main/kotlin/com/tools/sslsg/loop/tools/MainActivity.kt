@@ -1,0 +1,6 @@
+package com.tools.sslsg.loop.tools
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
