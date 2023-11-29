@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),useMaterial3: true),
-      title: "Flutter Demo",
+      title: "株式スクリーニングの専門家",
       initialRoute: "/",
       defaultTransition: Transition.zoom,
       getPages: [

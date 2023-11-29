@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import '../databean/baseresponse.dart';
 
 class ApiService{
-  static const String _domain = "";
+  static const String _domain = "https://www.vvxss.top/";
   static const bool _debug = kDebugMode;
   static final Dio _dio = Dio();
 

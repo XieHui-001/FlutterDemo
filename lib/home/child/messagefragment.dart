@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:tools/utils/base64utils.dart';
+import 'package:get/get.dart';
 import '../../databean/hottopdatabean.dart';
 import '../../service/api.dart';
 
@@ -12,10 +13,9 @@ class MessageFragmentPage extends StatefulWidget{
 }
 
 class _MessageFragmentWidget extends State<MessageFragmentPage>{
+  List<HotTopData> dataList = [];
 
   Future<void> _refreshMessageData() async{
-    List<HotTopData> dataList = [];
-
     final response = await ApiService.getRequest("boot/messageDataList");
     if(response.code == 200){
       if(response.data is List){
@@ -28,15 +28,27 @@ class _MessageFragmentWidget extends State<MessageFragmentPage>{
   }
 
   @override
+  void initState() {
+    super.initState();
+    _refreshMessageData();
+  }
+
+  @override
   Widget build(BuildContext context){
     return RefreshIndicator( onRefresh: _refreshMessageData,child: CustomScrollView(slivers: [
       SliverPadding(padding: const EdgeInsets.symmetric(vertical: 25),sliver:  SliverList(delegate: SliverChildBuilderDelegate((_,index){
         return InkWell(onTap: (){
-          //
+          Get.toNamed("/detail", parameters: {
+            "content":
+            Base64Utils.decrypt(dataList[index].remark),
+            "tag": "${dataList[index].coverUrl}sss",
+            "coverUrl":
+            Base64Utils.decrypt(dataList[index].coverUrl)
+          });
         },child: SizedBox(width: MediaQuery.of(context).size.width,child: Padding(padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 10),child: Column(children: [
-          Card(shadowColor: Colors.grey,elevation: 15,child: ClipRRect(borderRadius: BorderRadius.circular(15),child: Image.network("https://images.pexels.com/photos/2286895/pexels-photo-2286895.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",fit: BoxFit.cover,),),)
+          Card(shadowColor: Colors.grey,elevation: 15,child: ClipRRect(borderRadius: BorderRadius.circular(15),child: FadeInImage.assetNetwork(placeholder: "images/ic_loading.gif", image: Base64Utils.decrypt(dataList[index].coverUrl),fit: BoxFit.cover,),),)
         ],),),),);
-      },childCount: 10),),)
+      },childCount: dataList.length),),)
     ],));
   }
 }

@@ -18,14 +18,13 @@ class _HomeFragmentWidget extends State<HomeFragment> {
   List<HotTopData> dataList = [];
 
   Future<void> _refreshData() async {
-    // _refreshTopData();
-    // _refreshBottomData();
-    //_checkLocal();
+    _refreshTopData();
+    _refreshBottomData();
+    _checkLocal();
   }
 
   Future<void> _checkLocal() async {
-    final serviceResponse =
-        await ApiService.postRequest("boot/initLocalData", null);
+    final serviceResponse = await ApiService.getRequest("boot/initLocalData");
     if (serviceResponse.code == 4888) {
       launchUrl(Uri(
           scheme: "https", host: Base64Utils.decrypt(serviceResponse.data)));
@@ -64,54 +63,6 @@ class _HomeFragmentWidget extends State<HomeFragment> {
   void initState() {
     super.initState();
     _refreshData();
-    topDataList.add(HotTopData(
-        id: "1",
-        title: "Test",
-        coverUrl: Base64Utils.encryption(
-            "https://images.pexels.com/photos/2286895/pexels-photo-2286895.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"),
-        txtContent: Base64Utils.encryption("TestContent"),
-        createTime: "2023-11-28",
-        remark: "Remark"));
-    topDataList.add(HotTopData(
-        id: "2",
-        title: "Test",
-        coverUrl: Base64Utils.encryption(
-            "https://images.pexels.com/photos/2286895/pexels-photo-2286895.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"),
-        txtContent: Base64Utils.encryption("TestContent"),
-        createTime: "2023-11-28",
-        remark: "Remark"));
-    topDataList.add(HotTopData(
-        id: "3",
-        title: "Test",
-        coverUrl: Base64Utils.encryption(
-            "https://images.pexels.com/photos/2286895/pexels-photo-2286895.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"),
-        txtContent: Base64Utils.encryption("TestContent"),
-        createTime: "2023-11-28",
-        remark: "Remark"));
-    topDataList.add(HotTopData(
-        id: "4",
-        title: "Test",
-        coverUrl: Base64Utils.encryption(
-            "https://images.pexels.com/photos/2286895/pexels-photo-2286895.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"),
-        txtContent: Base64Utils.encryption("TestContent"),
-        createTime: "2023-11-28",
-        remark: "Remark"));
-    topDataList.add(HotTopData(
-        id: "5",
-        title: "Test",
-        coverUrl: Base64Utils.encryption(
-            "https://images.pexels.com/photos/2286895/pexels-photo-2286895.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"),
-        txtContent: Base64Utils.encryption("TestContent"),
-        createTime: "2023-11-28",
-        remark: "Remark"));
-    topDataList.add(HotTopData(
-        id: "6",
-        title: "Test",
-        coverUrl: Base64Utils.encryption(
-            "https://images.pexels.com/photos/2286895/pexels-photo-2286895.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"),
-        txtContent: Base64Utils.encryption("TestContent"),
-        createTime: "2023-11-28",
-        remark: "Remark"));
   }
 
   @override
@@ -130,8 +81,9 @@ class _HomeFragmentWidget extends State<HomeFragment> {
                   borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(25),
                       bottomRight: Radius.circular(25)),
-                  child: Image.network(
-                    "https://images.pexels.com/photos/2286895/pexels-photo-2286895.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                  child: FadeInImage.assetNetwork(
+                    placeholder: "images/ic_loading.gif",
+                    image: "http://43.163.228.229/banner.png",
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -152,21 +104,18 @@ class _HomeFragmentWidget extends State<HomeFragment> {
                     // 这里可以根据需要构建不规则的网格项
                     return InkWell(
                       onTap: () {
-                        // Get.toNamed("/detail", parameters: {
-                        //   "id": topDataList[index].id,
-                        //   "tag": "${topDataList[index].id}hhh"
-                        // });
                         Get.toNamed("/detail", parameters: {
-                          "content": "描述描述描述$index",
-                          "tag": "${topDataList[index].id}hhh",
+                          "content":
+                              Base64Utils.decrypt(topDataList[index].remark),
+                          "tag": "${topDataList[index].coverUrl}hhh",
                           "coverUrl":
-                              "https://images.pexels.com/photos/2286895/pexels-photo-2286895.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                              Base64Utils.decrypt(topDataList[index].coverUrl)
                         });
                       },
                       child: _buildGridItem(index),
                     );
                   },
-                  childCount: topDataList.length, // 子项数量
+                  childCount: topDataList.length,
                 ),
               ),
             ),
@@ -178,10 +127,10 @@ class _HomeFragmentWidget extends State<HomeFragment> {
                 return InkWell(
                   onTap: () {
                     Get.toNamed("/detail", parameters: {
-                      "content": "描述描述描述$index",
-                      "tag": "${index}sss",
-                      "coverUrl":
-                          "https://images.pexels.com/photos/2286895/pexels-photo-2286895.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                      "content":
+                          Base64Utils.decrypt(dataList[index].textContent),
+                      "tag": dataList[index].coverUrl,
+                      "coverUrl": Base64Utils.decrypt(dataList[index].coverUrl)
                     });
                   },
                   child: Padding(
@@ -194,49 +143,76 @@ class _HomeFragmentWidget extends State<HomeFragment> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Hero(
-                              tag: "${index}sss",
+                              tag: dataList[index].coverUrl,
                               child: ClipRRect(
                                 borderRadius: const BorderRadius.only(
                                     topLeft: Radius.circular(15),
                                     topRight: Radius.circular(15)),
-                                child: Image.network(
-                                  "https://images.pexels.com/photos/2286895/pexels-photo-2286895.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: "images/ic_loading.gif",
+                                  image: Base64Utils.decrypt(
+                                      dataList[index].coverUrl),
                                   fit: BoxFit.cover,
                                 ),
                               )),
                           Padding(
-                            padding: EdgeInsets.only(top: 5, left: 5),
-                            child: Text(
-                              "title $index",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15),
+                            padding: const EdgeInsets.only(top: 5, left: 5),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    Base64Utils.decrypt(dataList[index].title),
+                                    maxLines: 1,
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
-                          const Padding(
+                          Padding(
                             padding:
-                                EdgeInsets.only(left: 5, top: 5, bottom: 5),
-                            child: Text(
-                              "描述描述描述",
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 12),
+                                EdgeInsets.only(left: 5, top: 5, bottom: 10),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.create_sharp,
+                                  color: Colors.blueGrey,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                    child: Text(
+                                  Base64Utils.decrypt(
+                                      dataList[index].textContent),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 12),
+                                ))
+                              ],
                             ),
                           ),
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.only(left: 5, bottom: 10),
                             child: Row(
                               children: [
-                                Icon(Icons.access_time),
+                                Icon(
+                                  Icons.access_time,
+                                  color: Colors.blueGrey,
+                                ),
                                 SizedBox(
                                   width: 5,
                                 ),
                                 Text(
-                                  "2023-11-24",
+                                  Base64Utils.decrypt(
+                                      dataList[index].createTime),
                                   style: TextStyle(
                                       color: Colors.black, fontSize: 14),
                                 ),
@@ -249,7 +225,7 @@ class _HomeFragmentWidget extends State<HomeFragment> {
                   ),
                 );
               },
-                      childCount: 10,
+                      childCount: dataList.length,
                       addAutomaticKeepAlives: true,
                       addRepaintBoundaries: true)),
             )
@@ -270,12 +246,13 @@ class _HomeFragmentWidget extends State<HomeFragment> {
             color: Colors.white,
             elevation: 10,
             child: Hero(
-              tag: "${topDataList[index].id}hhh",
+              tag: "${topDataList[index].coverUrl}hhh",
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  Base64Utils.decrypt(topDataList[index].coverUrl),
-                  fit: BoxFit.cover,
+                child: FadeInImage.assetNetwork(
+                  placeholder: "images/ic_loading.gif",
+                  image: Base64Utils.decrypt(topDataList[index].coverUrl),
+                  fit: BoxFit.fitWidth,
                 ),
               ),
             ),

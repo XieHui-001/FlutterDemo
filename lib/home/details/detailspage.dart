@@ -42,8 +42,9 @@ class _DetailsWidget extends State<DetailsPage> {
           flexibleSpace: FlexibleSpaceBar(
             background: Hero(
                 tag: tag,
-                child: Image.network(
-                  coverUrl,
+                child: FadeInImage.assetNetwork(
+                  placeholder: "images/ic_loading.gif",
+                  image: coverUrl,
                   fit: BoxFit.cover,
                 )),
           ),

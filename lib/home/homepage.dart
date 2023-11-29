@@ -1,13 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tools/service/api.dart';
 import 'package:get/get.dart';
-import '../utils/base64utils.dart';
 import 'child/aboutfragment.dart';
 import 'child/homefragment.dart';
 import 'child/messagefragment.dart';
 import 'package:lottie/lottie.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget{
 

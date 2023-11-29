@@ -31,6 +31,6 @@ class _StartWidget extends State<StartPage>{
   @override
   Widget build(BuildContext context){
     jumpMain();
-    return WillPopScope(onWillPop: _onExitApp,child: Container(width: MediaQuery.of(context).size.width,height:MediaQuery.of(context).size.height,color: Colors.white,child: Image.asset("images/ic_start_bg.png",fit: BoxFit.cover,),),);
+    return WillPopScope(onWillPop: _onExitApp,child: Container(width: MediaQuery.of(context).size.width,height:MediaQuery.of(context).size.height,color: Colors.white,child: Image.asset("images/icon.png",fit: BoxFit.cover,),),);
   }
 }
